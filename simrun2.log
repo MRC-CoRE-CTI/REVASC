@@ -1,0 +1,168 @@
+
+> # MAIN POWER SIMULATION
+> # simrun.R
+> # IW 31mar2026 building on Wenyue's code
+> 
+> library(Rlab)
+Rlab 4.5.1 attached.
+
+
+Attaching package: ‘Rlab’
+
+The following objects are masked from ‘package:stats’:
+
+    dexp, dgamma, dweibull, pexp, pgamma, pweibull, qexp, qgamma, qweibull, rexp, rgamma, rweibull
+
+The following object is masked from ‘package:datasets’:
+
+    precip
+
+> library(survival)
+
+Attaching package: ‘survival’
+
+The following object is masked from ‘package:Rlab’:
+
+    cancer
+
+> # library(SurvRegCensCov)
+> library(foreach)
+
+> library(doParallel)
+Loading required package: iterators
+Loading required package: parallel
+
+> library(purrr)
+
+Attaching package: ‘purrr’
+
+The following objects are masked from ‘package:foreach’:
+
+    accumulate, when
+
+> library(bayesmeta)
+Loading required package: forestplot
+Loading required package: grid
+Loading required package: checkmate
+Loading required package: abind
+Loading required package: metafor
+Loading required package: Matrix
+Loading required package: metadat
+Loading required package: numDeriv
+
+Loading the 'metafor' package (version 4.8-0). For an
+introduction to the package please type: help(metafor)
+
+Loading required package: mvtnorm
+
+Attaching package: ‘bayesmeta’
+
+The following object is masked from ‘package:stats’:
+
+    convolve
+
+> setwd("C:/temp/Revasc")
+
+> source("gendata.R")
+
+> source("prepdata.R")
+
+> source("anadata.R")
+
+> source("manyreps.R")
+
+> # common DGM parameters
+> target_hr = 0.7
+
+> crossover = 0.08
+
+> prevalence_set = c(0.25, 0.04, 0.06, 0.27, 0.24, 0.09, 0.05)
+
+> acc_period = 36
+
+> time_censor = 48
+
+> K = length(prevalence_set)
+
+> common_shape = 0.48 # CORRECTED 31MAR2026
+
+> cont_cuminc_5y = c(.623,.490,.398,.609,.392,.720,.689) # Weiqi's 5-year cum inc for PCI group
+
+> scale_con = 60 * (-log(1-cont_cuminc_5y))^(-1/common_shape) # Weibull calculation
+
+> simrun <- function(nonnull,N_tot,nSims){
++   results <- manyreps(
++     # specific DGM parameters
++     N_tot = N_tot, nonnull=nonnull,
++     # comm .... [TRUNCATED] 
+
+> nSims=5000
+
+> ### GLOBAL NULL ###
+> simrun(nonnull=rep(0,K),N_tot=1500,nSims=nSims)
+            Cl1    Cl2    Cl3    Cl4    Cl5    Cl6    Cl7   fwer avepower wtavepower
+separate 0.0260 0.0234 0.0248 0.0264 0.0216 0.0250 0.0234 0.1564      NaN        NaN
+borrow   0.0106 0.0004 0.0006 0.0128 0.0064 0.0044 0.0022 0.0274      NaN        NaN
+
+> ### GLOBAL ALTERNATIVE ###
+> simrun(nonnull=rep(1,K),N_tot=1500,nSims=nSims)
+            Cl1    Cl2    Cl3    Cl4    Cl5    Cl6    Cl7 fwer  avepower wtavepower
+separate 0.5624 0.0984 0.1148 0.5864 0.3578 0.2700 0.1590    0 0.3069714   0.427874
+borrow   0.8310 0.4232 0.4540 0.8320 0.7030 0.6382 0.5216    0 0.6290000   0.728796
+
+> simrun(nonnull=rep(1,K),N_tot=2000,nSims=nSims)
+            Cl1    Cl2    Cl3    Cl4    Cl5   Cl6    Cl7 fwer  avepower wtavepower
+separate 0.6800 0.1230 0.1378 0.7088 0.4480 0.364 0.1934    0 0.3792857   0.524514
+borrow   0.8988 0.5418 0.5802 0.9090 0.8016 0.749 0.6374    0 0.7311143   0.818278
+
+> simrun(nonnull=rep(1,K),N_tot=2500,nSims=nSims)
+           Cl1    Cl2    Cl3    Cl4    Cl5    Cl6    Cl7 fwer  avepower wtavepower
+separate 0.780 0.1462 0.1708 0.7836 0.5482 0.4320 0.2454    0 0.4437429   0.605386
+borrow   0.945 0.6324 0.6632 0.9480 0.8684 0.8204 0.7174    0 0.7992571   0.875420
+
+> simrun(nonnull=rep(1,K),N_tot=3000,nSims=nSims)
+            Cl1    Cl2    Cl3    Cl4    Cl5    Cl6    Cl7 fwer  avepower wtavepower
+separate 0.8504 0.1712 0.2130 0.8686 0.6168 0.4900 0.2878    0 0.4996857   0.673272
+borrow   0.9682 0.6982 0.7338 0.9696 0.9082 0.8586 0.7730    0 0.8442286   0.909690
+
+> N_tot=3000
+
+> ### PARTIAL ALTERNATIVE 1: ONLY SMALLEST CLUSTER (2) IS NULL
+> simrun(nonnull=c(1,0,1,1,1,1,1),N_tot=N_tot,nSims=nSims)
+            Cl1    Cl2    Cl3    Cl4    Cl5    Cl6    Cl7   fwer  avepower wtavepower
+separate 0.8488 0.0196 0.2064 0.8654 0.6292 0.4934 0.2986 0.0196 0.5569667  0.6964438
+borrow   0.9604 0.3366 0.6494 0.9636 0.8908 0.8396 0.7208 0.3366 0.8374333  0.9006583
+
+> ### PARTIAL ALTERNATIVE 2: ONLY LARGEST CLUSTER (4) IS NULL
+> simrun(nonnull=c(1,1,1,0,1,1,1),N_tot=N_tot,nSims=nSims)
+            Cl1    Cl2    Cl3   Cl4    Cl5    Cl6    Cl7  fwer  avepower wtavepower
+separate 0.8448 0.1742 0.1972 0.025 0.6308 0.4988 0.2842 0.025 0.4383333  0.6034164
+borrow   0.9262 0.3230 0.3648 0.127 0.7876 0.6868 0.4894 0.127 0.5963000  0.7420055
+
+> ### PARTIAL ALTERNATIVE 3: ONLY SMALLEST CLUSTER (2) IS NON-NULL
+> simrun(nonnull=c(0,1,0,0,0,0,0),N_tot=N_tot,nSims=nSims)
+            Cl1    Cl2    Cl3    Cl4    Cl5    Cl6    Cl7   fwer avepower wtavepower
+separate 0.0252 0.1750 0.0224 0.0222 0.0248 0.0264 0.0234 0.1342   0.1750     0.1750
+borrow   0.0164 0.0068 0.0020 0.0166 0.0096 0.0056 0.0022 0.0418   0.0068     0.0068
+
+> ### PARTIAL ALTERNATIVE 4: ONLY LARGEST CLUSTER (4) IS NON-NULL
+> simrun(nonnull=c(0,0,0,1,0,0,0),N_tot=N_tot,nSims=nSims)
+            Cl1    Cl2    Cl3    Cl4    Cl5    Cl6    Cl7   fwer avepower wtavepower
+separate 0.0264 0.0244 0.0232 0.8782 0.0266 0.0272 0.0264 0.1456   0.8782     0.8782
+borrow   0.0326 0.0084 0.0080 0.7192 0.0286 0.0224 0.0146 0.0924   0.7192     0.7192
+
+> ### PARTIAL ALTERNATIVE 5: THREE LARGEST CLUSTERS (5,1,4) ARE NULL
+> simrun(nonnull=c(0,1,1,0,0,1,1),N_tot=N_tot,nSims=nSims)
+            Cl1    Cl2    Cl3    Cl4    Cl5    Cl6    Cl7   fwer avepower wtavepower
+separate 0.0272 0.1738 0.1984 0.0244 0.0222 0.5072 0.2876 0.0714  0.29175  0.3286833
+borrow   0.0478 0.0756 0.0990 0.0480 0.0462 0.3760 0.1804 0.1192  0.18275  0.2159333
+
+> ### PARTIAL ALTERNATIVE 6: THREE LARGEST CLUSTERS (5,1,4) ARE NON-NULL
+> simrun(nonnull=c(1,0,0,1,1,0,0),N_tot=N_tot,nSims=nSims)
+            Cl1    Cl2    Cl3    Cl4    Cl5    Cl6    Cl7   fwer  avepower wtavepower
+separate 0.8498 0.0244 0.0224 0.8626 0.6172 0.0222 0.0218 0.0878 0.7765333  0.7808947
+borrow   0.9134 0.0754 0.0774 0.9166 0.7360 0.1034 0.0996 0.2314 0.8553333  0.8585158
+
+> ### SAVE AND END ###
+> 
+> save.image(file="simrun.Rdata")
