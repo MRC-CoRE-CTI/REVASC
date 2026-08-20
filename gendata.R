@@ -1,9 +1,8 @@
-# Alternative to gendata.R
-# Generate data in one data frame
+# Generate data for REVASC
 # Allows for staggered entry
 # Assumes entry times are uniformly distributed over the accrual period
-# IW 30apr2026
-# Checked by check_gendata_R: does give correct answers
+# IW 30apr2026, updated 20aug2026
+# Checked by check_gendata.R: does give correct answers
 
 gendata <- function(K, # subgroups
                     N_tot, # total sample size 

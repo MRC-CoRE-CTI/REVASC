@@ -1,5 +1,9 @@
 # setup.R - read files and set parms
 
+# User-specific setup
+setwd("C:/ian/git/REVASC")
+# End of user-specific setup
+
 library(Rlab)
 library(survival)
 # library(SurvRegCensCov)
@@ -7,8 +11,6 @@ library(foreach)
 library(doParallel)
 library(purrr)
 library(bayesmeta)
-
-setwd("C:/ian/git/High risk REVASC code")
 
 source("gendata.R")
 source("prepdata.R")

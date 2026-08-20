@@ -1,7 +1,9 @@
 * simrun_graphs.do
 * edited 20apr2026
 
-cd "C:/ian/git/High risk REVASC code"
+* User-specific setup
+cd "C:/ian/git/REVASC"
+* End of user-specific setup
 
 import excel "simrun_results.xlsx", sheet("simrun2 shape=0.48") firstrow case(lower) clear
 drop comments

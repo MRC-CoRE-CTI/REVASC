@@ -3,20 +3,20 @@
 
 
 mygendata <- gendata(K=7,
-    N_tot = N_tot,
+    N_tot = 3000,
     target_hr = target_hr, 
     crossover = crossover, 
     prevalence_set = prevalence_set,
     common_shape = common_shape,
     scale_con = scale_con,
-    nonnull=nonnull,
+    nonnull = rep(1, 7),
     acc_period = acc_period,
     time_censor = time_censor
 )
 
 # Export to Stata
-#library(foreign)
-#write.dta(mygendata, "gendata.dta")
+library(foreign)
+write.dta(mygendata, "gendata.dta")
 
 # various analyses and descriptive statistics
 table(mygendata$subgroupid, mygendata$rand)
