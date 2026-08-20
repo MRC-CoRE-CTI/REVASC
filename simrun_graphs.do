@@ -1,8 +1,9 @@
 * simrun_graphs.do
 * edited 20apr2026
 
-cd "S:\MRCCTU_Methodology\1_Design\Projects\High-risk REVASC trial design\Code"
-import excel "S:\MRCCTU_Methodology\1_Design\Projects\High-risk REVASC trial design\Code\simrun_results.xlsx", sheet("simrun2 shape=0.48") firstrow case(lower) clear
+cd "C:/ian/git/High risk REVASC code"
+
+import excel "simrun_results.xlsx", sheet("simrun2 shape=0.48") firstrow case(lower) clear
 drop comments
 replace dgm=dgm[_n-1] if mi(dgm)
 replace n_tot=n_tot[_n-1] if mi(n_tot)
