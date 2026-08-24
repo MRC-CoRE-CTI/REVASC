@@ -27,15 +27,10 @@ anadata <- function(prepdata, scale_hn=0.26) {
   
   # Power/Type I error
   # this is p(theta1<0|data) - must be >1-alpha/2 to reject: 
-  pprob <- c(mybayesmeta$pposterior(theta = 0, individual = 1),
-                    mybayesmeta$pposterior(theta = 0, individual = 2),
-                    mybayesmeta$pposterior(theta = 0, individual = 3),
-                    mybayesmeta$pposterior(theta = 0, individual = 4),
-                    mybayesmeta$pposterior(theta = 0, individual = 5),
-                    mybayesmeta$pposterior(theta = 0, individual = 6),
-                    mybayesmeta$pposterior(theta = 0, individual = 7)
+  pprob <- vapply(1:K,
+    function(id) mybayesmeta$pposterior(theta = 0, individual = id),
+    numeric(1)
   )
-
   # to get posterior interval for study 1: 
       # bayesmeta$post.interval(mu.level=.95,individual=1)
 

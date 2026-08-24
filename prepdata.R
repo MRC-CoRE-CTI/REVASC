@@ -9,7 +9,6 @@ prepdata<-function(gendata) {
   beta.hat <- rep(NA,K)
   sd.within <- rep(NA,K)
   for(i in 1:K){
-    print(i)
     model <- tryCatch(
       coxph(Surv(survt, status) ~ rand, data = subset(mygendata,subgroupid==i)), 
       error = function(e) NULL)

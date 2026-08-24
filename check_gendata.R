@@ -1,15 +1,15 @@
 # check_gendata.R
 # create big data sets that we can analyse in Stata to confirm control S(5)
 
-
-mygendata <- gendata(K=7,
+K <- length(prevalence_set)
+mygendata <- gendata(
     N_tot = 3000,
     target_hr = target_hr, 
     crossover = crossover, 
     prevalence_set = prevalence_set,
     common_shape = common_shape,
     scale_con = scale_con,
-    nonnull = rep(1, 7),
+    nonnull = rep(1, K),
     acc_period = acc_period,
     time_censor = time_censor
 )

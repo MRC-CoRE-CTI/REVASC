@@ -3,9 +3,9 @@
 # Assumes entry times are uniformly distributed over the accrual period
 # IW 30apr2026, updated 20aug2026
 # Checked by check_gendata.R: does give correct answers
+# IW 24aug2026 allow any K
 
-gendata <- function(K, # subgroups
-                    N_tot, # total sample size 
+gendata <- function(N_tot, # total sample size 
                     target_hr, # target HR 
                     crossover, # anticipated cross-over 
                     prevalence_set, # prevalence set
@@ -17,6 +17,8 @@ gendata <- function(K, # subgroups
                     palloc=0.5 # p(rand to treatment)
 )
 {
+K <- length(prevalence_set) # subgroups
+
 # Calculations by subgroup
 subgroupid = c(1:K)
 

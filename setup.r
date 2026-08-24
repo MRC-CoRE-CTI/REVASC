@@ -17,14 +17,26 @@ source("prepdata.R")
 source("anadata.R")
 source("manyreps.R")
 
-target_hr = 0.7
-crossover = 0.08
-prevalence_set = c(0.25, 0.04, 0.06, 0.27, 0.24, 0.09, 0.05)
-common_shape = 1.1
-cont_cuminc_5y = c(.623,.490,.398,.609,.392,.720,.689) # Weiqi's 5-year cum inc for PCI group
-scale_con = 60 * (-log(1-cont_cuminc_5y))^(-1/common_shape) # Weibull calculation
-acc_period = 36
-time_censor = 48
+# settings for this run
+target_hr <- 0.7
+crossover <- 0.08
+common_shape <- 1.1
+acc_period <- 36
+time_censor <- 48
+
+# parameters with HF patients (7 subgroups)
+# prevalence_set <- c(0.25, 0.04, 0.06, 0.27, 0.24, 0.09, 0.05)
+# cont_cuminc_5y <- c(.623, .490, .398, .609, .392, .720, .689) # Weiqi's 5-year cum inc for PCI group
+
+# parameters without HF patients (6 subgroups)
+# figures from Weiqi 24/8/2026
+nobs <- c(21878,6477,24506,23179,6153,4323)
+nobspci <- c(8002, 2138, 9336, 16331, 1523, 875)
+neventpci <- c(4857, 850, 5605, 6350, 1017, 591) # all-cause mortality or CV hospitalisation to 5 years
+prevalence_set <- nobs/sum(nobs)
+cont_cuminc_5y <- neventpci/nobspci
+
+scale_con <- 60 * (-log(1-cont_cuminc_5y))^(-1/common_shape) # Weibull calculation
 
 set.seed(101)
 
