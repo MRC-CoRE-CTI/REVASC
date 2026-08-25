@@ -4,16 +4,19 @@
 # IW 20aug2026 tidied up
 # IW 24aug2026 manyreps returns both sep and BB
 
+# clear workspace
+rm(list = ls())
+
+# load all simulation programs
 source("setup.R")
 
-# settings for this run
+# DGM settings for this run
 target_hr <- 0.7
 crossover <- 0.08
 common_shape <- 1.1
 acc_period <- 36
 time_censor <- 48
-run <- 2 # 1: 7 classes incl. HF; 2: 6 classes excl. HF
-
+run <- 1 # 1: 7 classes incl. HF; 2: 6 classes excl. HF
 if(run==1) {
   # parameters with HF patients (7 subgroups)
   prevalence_set <- c(0.25, 0.04, 0.06, 0.27, 0.24, 0.09, 0.05)
@@ -28,15 +31,16 @@ if(run==2){
   prevalence_set <- nobs / sum(nobs)
   cont_cuminc_5y <- neventpci / nobspci
 }
+
 # derived parameters
 K <- length(prevalence_set)
 scale_con <- 60 * (-log(1-cont_cuminc_5y))^(-1/common_shape) # Weibull calculation
 
 # simulation settings
 N_reps <- 5000
-# I'll set seed before each run, so that it can be run in parts
+# I'll set the seed before each run, so that the script can be run in parts
 
-
+# define simulation program
 sim_run <- function(nonnull, N_tot, N_reps) {
   K <- length(prevalence_set)
   alpha <- 0.025 # 1-sided nominal sig level
@@ -78,10 +82,11 @@ sim_run <- function(nonnull, N_tot, N_reps) {
   colnames(res)[3:(K+2)] <- c(paste0("Cl", 1:K))
   return(res)
 }
+# now run the simulations
 
 ### GLOBAL NULL ###
 set.seed(101)
-# resgn <- sim_run(nonnull = rep(0, K), N_tot = 1500, N_reps = N_reps)
+resgn <- sim_run(nonnull = rep(0, K), N_tot = 1500, N_reps = N_reps)
 resgn
 
 ### GLOBAL ALTERNATIVE, VARY N ###
@@ -89,7 +94,7 @@ for(i in 1:4) {
   set.seed(101)
   N_tot=1000+500*i # 1500 to 3000
   thisresult = paste0("resga",i)
-  # assign(thisresult, sim_run(nonnull = rep(1, K), N_tot = N_tot, N_reps = N_reps))
+  assign(thisresult, sim_run(nonnull = rep(1, K), N_tot = N_tot, N_reps = N_reps))
   print(get(thisresult))
 }
 
@@ -134,6 +139,7 @@ for(i in 1:6){
 
 ### SAVE AND END ###
 allresults <- rbind(resgn, resga1, resga2, resga3, resga4, respa1, respa2, respa3, respa4, respa5, respa6)
+allresults
 library(writexl)
 outfile <- paste0("simrun_results_run", run)
 write_xlsx(as.data.frame(allresults), paste0(outfile,".xlsx"))
