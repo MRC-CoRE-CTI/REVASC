@@ -2,6 +2,7 @@
 # Runs the simulation many times
 # revised 20aug2026
 # 24aug2026 returns both sep and BB
+# note: %dopar% approx halves run time on my laptop cf %do%
 
 manyreps <- function(
 	# DGM parameters
@@ -22,6 +23,8 @@ manyreps <- function(
 )
 {
 	cat("Running", N_reps, "repetitions with K =", K, "\n")
+	cat("Starting at", format(Sys.time(), "%d/%m/%Y %H:%M:%S"), "\n")
+	start.time <- Sys.time()
 	set.seed(seed)
 
 	K <- length(prevalence_set)
@@ -58,6 +61,11 @@ manyreps <- function(
 	}
 	parallel::stopCluster(cl)
 
+	# show elapsed time
+	cat("Ending at", format(Sys.time(), "%d/%m/%Y %H:%M:%S"), "\n")
+	cat("Elapsed time:", 
+		round(as.numeric(difftime(Sys.time(), start.time, units = "mins")), 2), 
+		"mins\n")
 	df <- as.data.frame(do.call(rbind, out))
 	colnames(df) <- c(paste0("psep", 1:K), paste0("pbb", 1:K))
 	return(df)
