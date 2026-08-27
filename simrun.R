@@ -6,6 +6,7 @@
 
 # clear workspace
 rm(list = ls())
+options(width = 120)
 
 # load all simulation programs
 source("setup.R")
@@ -16,7 +17,7 @@ crossover <- 0.08
 common_shape <- 1.1
 acc_period <- 36
 time_censor <- 48
-run <- 1 # 1: 7 classes incl. HF; 2: 6 classes excl. HF
+run <- 2 # 1: 7 classes incl. HF; 2: 6 classes excl. HF
 if(run==1) {
   # parameters with HF patients (7 subgroups)
   prevalence_set <- c(0.25, 0.04, 0.06, 0.27, 0.24, 0.09, 0.05)
@@ -93,6 +94,7 @@ resgn
 for(i in 1:4) {
   set.seed(101)
   N_tot=1000+500*i # 1500 to 3000
+  print("Global alternative, N_tot =", N_tot)
   thisresult = paste0("resga",i)
   assign(thisresult, sim_run(nonnull = rep(1, K), N_tot = N_tot, N_reps = N_reps))
   print(get(thisresult))
@@ -131,6 +133,7 @@ if(run==2) {
 }
 for(i in 1:6){
   set.seed(101)
+  print("Partial alternative", i)
   thisresult <- paste0("respa",i) 
   thisnonnull <- paste0("nonnull_pa",i)
   assign(thisresult, sim_run(get(thisnonnull), N_tot = N_tot, N_reps = N_reps))
