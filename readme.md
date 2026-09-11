@@ -1,4 +1,4 @@
-<a href="https://www.ucl.ac.uk/population-health-sciences/clinical-trials-and-methodology/about/mrc-centre-research-excellence-clinical-trial-innovation-partnership-nihr"><img src="MRC_CoRE_lock in NIHR RGB.png" width="50%" /></a>
+<a href="https://www.ucl.ac.uk/population-health-sciences/clinical-trials-and-methodology/about/mrc-centre-research-excellence-clinical-trial-innovation-partnership-nihr"><img src="MRC_CoRE_lock in NIHR RGB.png" width="100%" /></a>
 # REVASC : code for HIGH RISK REVASC trial design
 
 Ian White, Wenyue Li, Becky Turner
